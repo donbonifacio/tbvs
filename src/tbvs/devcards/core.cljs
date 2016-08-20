@@ -1,12 +1,12 @@
 (ns tbvs.devcards.core
   (:require
    [reagent.core :as reagent]
+   [tbvs.pixi.core :as pixi]
    [sablono.core :as sab :include-macros true])
   (:require-macros
    [devcards.core :as dc :refer [defcard defcard-rg deftest]]))
 
 (enable-console-print!)
-
 
 (defn canvas []
              [:canvas {:width "400px"
@@ -14,11 +14,9 @@
                        :style {:background-color "blue"}}])
 
 (defn animate [renderer stage bunny]
-  (.render renderer stage)
-  (set! (-> bunny .-rotation) (+ 0.02 (-> bunny .-rotation)))
-  (js/requestAnimationFrame #(animate renderer stage bunny)
-                            )
-  )
+  (pixi/render renderer stage)
+  (pixi/rotate bunny 0.1)
+  (js/requestAnimationFrame #(animate renderer stage bunny)))
 
 (defcard-rg rg-example-2
     "some docs"
@@ -28,19 +26,14 @@
         (fn [this]
           (let [dom-node (reagent/dom-node this)
                 options #js {:view dom-node}
-                renderer (js/PIXI.autoDetectRenderer 400 400 options)
-                stage (new js/PIXI.Container)
-                texture (PIXI.Texture.fromImage "bunny.png")
-                bunny (new PIXI.Sprite texture)
+                renderer (pixi/create-renderer 400 400 options)
+                stage (pixi/create-stage)
+                texture (pixi/texture-from-image "bunny.png")
+                bunny (pixi/create-sprite texture)
                 ]
-            (set! (-> bunny .-position .-x) 100)
-            (set! (-> bunny .-position .-y) 100)
-            (set! (-> bunny .-anchor .-x) 0.5)
-            (set! (-> bunny .-anchor .-y) 0.5)
-
-            (println dom-node)
-            #_(println "MOUNTED BIAATCH")
-            (.addChild stage bunny)
+            (pixi/set-pos bunny 100 100)
+            (pixi/set-anchor bunny 0.5 0.5)
+            (pixi/register-sprite stage bunny)
 
             (js/requestAnimationFrame #(animate renderer stage bunny))
             ))}))
