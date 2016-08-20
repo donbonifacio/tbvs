@@ -1,4 +1,4 @@
-(ns tbvs-devcards.core
+(ns tbvs.devcards.core
   (:require
    [reagent.core :as reagent]
    [sablono.core :as sab :include-macros true])
@@ -39,7 +39,7 @@
             (set! (-> bunny .-anchor .-y) 0.5)
 
             (println dom-node)
-            (println "MOUNTED BIAATCH")
+            #_(println "MOUNTED BIAATCH")
             (.addChild stage bunny)
 
             (js/requestAnimationFrame #(animate renderer stage bunny))
