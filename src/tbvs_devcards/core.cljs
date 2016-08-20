@@ -1,4 +1,4 @@
-(ns tbvs-devcards.cor
+(ns tbvs-devcards.core
   (:require
    [reagent.core :as reagent]
    [sablono.core :as sab :include-macros true])
