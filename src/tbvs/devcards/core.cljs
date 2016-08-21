@@ -13,10 +13,33 @@
                        :height "400px"
                        :style {:background-color "blue"}}])
 
-(defn animate [renderer stage bunny]
+(defn animate [renderer stage bunny msg]
+  #_(println renderer stage bunny msg)
   (pixi/render renderer stage)
-  (pixi/rotate bunny 0.1)
-  (js/requestAnimationFrame #(animate renderer stage bunny)))
+  (pixi/rotate bunny 0.01)
+  (js/requestAnimationFrame #(animate renderer stage bunny msg)))
+
+(defcard-rg rg-example-3
+    "some docs"
+     (with-meta
+      canvas
+      {:component-did-mount
+        (fn [this]
+          (let [dom-node (reagent/dom-node this)
+                options {:view dom-node :test true}
+
+                renderer (pixi/create-renderer 400 400 options)
+                stage (pixi/create-stage)
+                texture (pixi/texture-from-image "img/Player.png")
+                bunny (pixi/create-sprite texture)
+                ]
+            (pixi/set-pos bunny 200 200)
+            (pixi/set-scale bunny 0.2 0.2)
+            (pixi/set-anchor bunny 0.5 0.5)
+            (pixi/register-sprite stage bunny)
+
+            (js/requestAnimationFrame #(animate renderer stage bunny "anim 3"))
+            ))}))
 
 (defcard-rg rg-example-2
     "some docs"
@@ -25,17 +48,18 @@
       {:component-did-mount
         (fn [this]
           (let [dom-node (reagent/dom-node this)
-                options #js {:view dom-node}
+                options {:view dom-node :test true}
                 renderer (pixi/create-renderer 400 400 options)
                 stage (pixi/create-stage)
-                texture (pixi/texture-from-image "bunny.png")
+                texture (pixi/texture-from-image "img/Player.png")
                 bunny (pixi/create-sprite texture)
                 ]
             (pixi/set-pos bunny 100 100)
+            (pixi/set-scale bunny 0.2 0.2)
             (pixi/set-anchor bunny 0.5 0.5)
             (pixi/register-sprite stage bunny)
 
-            (js/requestAnimationFrame #(animate renderer stage bunny))
+            (js/requestAnimationFrame #(animate renderer stage bunny "anim 2"))
             ))}))
 
 

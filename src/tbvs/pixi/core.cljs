@@ -6,7 +6,9 @@
   ([w h]
    (create-renderer w h nil))
   ([w h options]
-   (js/PIXI.autoDetectRenderer w h options)))
+   (if (:test options)
+     (new js/PIXI.CanvasRenderer w, h, (clj->js options))
+     (js/PIXI.autoDetectRenderer w h (clj->js options)))))
 
 (defn create-stage
   "Creates a main stage"
@@ -28,6 +30,12 @@
   [sprite x y]
   (set! (-> sprite .-position .-x) x)
   (set! (-> sprite .-position .-y) y))
+
+(defn set-scale
+  "Sets the scale of a sprite"
+  [sprite scale-x scale-y]
+  (set! (-> sprite .-scale .-x) scale-x)
+  (set! (-> sprite .-scale .-y) scale-y))
 
 (defn set-anchor
   "Sets the x y anchor of a sprite"
