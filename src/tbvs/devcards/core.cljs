@@ -2,6 +2,8 @@
   (:require
    [reagent.core :as reagent]
    [tbvs.pixi.core :as pixi]
+   [tbvs.game.creator :as game-creator]
+   [tbvs.game.core :as game]
    [sablono.core :as sab :include-macros true])
   (:require-macros
    [devcards.core :as dc :refer [defcard defcard-rg deftest]]))
@@ -19,38 +21,25 @@
   (pixi/rotate bunny 0.01)
   (js/requestAnimationFrame #(animate renderer stage bunny msg)))
 
-(defcard-rg rg-example-3
+(defcard-rg tests
     "some docs"
      (with-meta
       canvas
       {:component-did-mount
         (fn [this]
-          (let [dom-node (reagent/dom-node this)
-                options {:view dom-node :test true}
+          (let [game (-> {:props {:width 400 :height 400}
+                          :entities {:player {:x 100 :y 100 :on :air
+                                              :type :player
+                                              :components [:renderable]}}
+                          :test true
+                          :state-bag {:pixi-renderer {:dom-node (reagent/dom-node this)}}
+                          :system [:pixi-renderer]}
+                         (game-creator/create)
+                         (game/start))
 
-                renderer (pixi/create-renderer 400 400 options)
-                stage (pixi/create-stage)
-                texture (pixi/texture-from-image "img/Player.png")
-                bunny (pixi/create-sprite texture)
-                ]
-            (pixi/set-pos bunny 200 200)
-            (pixi/set-scale bunny 0.2 0.2)
-            (pixi/set-anchor bunny 0.5 0.5)
-            (pixi/register-sprite stage bunny)
+                renderer (get-in game [:state-bag :pixi-renderer :renderer])
+                stage (get-in game [:state-bag :pixi-renderer :stage])
 
-            (js/requestAnimationFrame #(animate renderer stage bunny "anim 3"))
-            ))}))
-
-(defcard-rg rg-example-2
-    "some docs"
-     (with-meta
-      canvas
-      {:component-did-mount
-        (fn [this]
-          (let [dom-node (reagent/dom-node this)
-                options {:view dom-node :test true}
-                renderer (pixi/create-renderer 400 400 options)
-                stage (pixi/create-stage)
                 texture (pixi/texture-from-image "img/Player.png")
                 bunny (pixi/create-sprite texture)
                 ]
@@ -70,7 +59,3 @@
     (js/React.render (sab/html [:div "This is working"]) node)))
 
 (main)
-
-;; remember to run lein figwheel and then browse to
-;; http://localhost:3449/cards.html
-
