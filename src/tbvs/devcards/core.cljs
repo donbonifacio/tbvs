@@ -3,6 +3,7 @@
    [reagent.core :as reagent]
    [tbvs.pixi.core :as pixi]
    [tbvs.game.creator :as game-creator]
+   [tbvs.engine.core :as engine]
    [tbvs.game.core :as game]
    [sablono.core :as sab :include-macros true])
   (:require-macros
@@ -18,7 +19,6 @@
 (defn animate [renderer stage bunny msg]
   #_(println renderer stage bunny msg)
   (pixi/render renderer stage)
-  (pixi/rotate bunny 0.01)
   (js/requestAnimationFrame #(animate renderer stage bunny msg)))
 
 (defcard-rg tests
@@ -28,9 +28,9 @@
       {:component-did-mount
         (fn [this]
           (let [game (-> {:props {:width 400 :height 400}
-                          :entities {:player {:x 100 :y 100 :on :air
+                          :entities {:player {:x 200 :y 340 :on :air
                                               :type :player
-                                              :components [:renderable]}}
+                                              :components [[:renderable]]}}
                           :test true
                           :state-bag {:pixi-renderer {:dom-node (reagent/dom-node this)}}
                           :system [:pixi-renderer]}
@@ -40,15 +40,8 @@
                 renderer (get-in game [:state-bag :pixi-renderer :renderer])
                 stage (get-in game [:state-bag :pixi-renderer :stage])
 
-                texture (pixi/texture-from-image "img/Player.png")
-                bunny (pixi/create-sprite texture)
                 ]
-            (pixi/set-pos bunny 100 100)
-            (pixi/set-scale bunny 0.2 0.2)
-            (pixi/set-anchor bunny 0.5 0.5)
-            (pixi/register-sprite stage bunny)
-
-            (js/requestAnimationFrame #(animate renderer stage bunny "anim 2"))
+            (js/requestAnimationFrame #(animate renderer stage nil "anim 2"))
             ))}))
 
 

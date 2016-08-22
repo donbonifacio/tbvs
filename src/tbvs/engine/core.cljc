@@ -12,3 +12,14 @@
                                   [:destroyable]]}}
  :input [[:move :left]]
  :system [:input :ai :move :render]}
+
+(defn entities-with-component
+  "Gets the entities that match the given component"
+  [game component]
+  (when-let [entities (:entities game)]
+    (->> (filter (fn [[k entity]]
+                   (->> (:components entity)
+                        (map first)
+                        (some #{component})))
+                   entities)
+         (map second))))
