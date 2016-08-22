@@ -11,7 +11,8 @@
     (doseq [entity entities]
       (let [texture (pixi/texture-from-image "img/Player.png")
             sprite (pixi/create-sprite texture)]
-
+        (when-let [rotation (:rotation entity)]
+          (pixi/set-rotation sprite rotation))
         (pixi/set-pos sprite (:x entity) (:y entity))
         (pixi/set-scale sprite 0.8 0.8)
         (pixi/set-anchor sprite 0.5 0.5)
@@ -23,7 +24,7 @@
 
   (start [this game]
     (let [dom-node (get-in game [:state-bag :pixi-renderer :dom-node])
-          options {:view dom-node :test (:test game)}
+          options {:view dom-node :test (-> game :props :test)}
           width (get-in game [:props :width])
           height (get-in game [:props :height])
           renderer (pixi/create-renderer width height options)

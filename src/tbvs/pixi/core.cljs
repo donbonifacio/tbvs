@@ -43,6 +43,11 @@
   (set! (-> sprite .-anchor .-x) x)
   (set! (-> sprite .-anchor .-y) y))
 
+(defn set-rotation
+  "Sets the roration"
+  [sprite rotation]
+  (set! (-> sprite .-rotation) rotation))
+
 (defn rotate
   "Increments the rotation by the given number"
   [sprite rotation-accum]

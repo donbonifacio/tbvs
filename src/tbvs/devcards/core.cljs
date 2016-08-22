@@ -27,22 +27,15 @@
       canvas
       {:component-did-mount
         (fn [this]
-          (let [game (-> {:props {:width 400 :height 400}
+          (let [game (-> {:props {:width 400 :height 400 :test true}
                           :entities {:player {:x 200 :y 340 :on :air
                                               :type :player
                                               :components [[:renderable]]}}
-                          :test true
                           :state-bag {:pixi-renderer {:dom-node (reagent/dom-node this)}}
+                          :game-loop :pixi-game-loop
                           :system [:pixi-renderer]}
                          (game-creator/create)
-                         (game/start))
-
-                renderer (get-in game [:state-bag :pixi-renderer :renderer])
-                stage (get-in game [:state-bag :pixi-renderer :stage])
-
-                ]
-            (js/requestAnimationFrame #(animate renderer stage nil "anim 2"))
-            ))}))
+                         (game/start))]))}))
 
 
 (defn main []

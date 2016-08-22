@@ -5,4 +5,11 @@
 (defn start
   "Starts a new game"
   [game]
-  (gs/start (get-in game [:state-bag :pixi-renderer :handler]) game))
+  (->> game
+       (gs/start (get-in game [:state-bag :pixi-renderer :handler]))
+       ((:game-loop-fn game))))
+
+(defn next-state
+  "Advances the game to the next state"
+  [game]
+  (gs/process (get-in game [:state-bag :pixi-renderer :handler]) game))
