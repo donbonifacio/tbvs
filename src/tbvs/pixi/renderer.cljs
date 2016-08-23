@@ -2,6 +2,7 @@
   "Implementation of a rendering game system in pixi"
   (:require [tbvs.engine.protocols.game-system :as gs]
             [tbvs.engine.core :as engine]
+            [tbvs.pixi.entities :as entities]
             [tbvs.pixi.core :as pixi]))
 
 (defn register-entities
@@ -9,14 +10,8 @@
   [game stage]
   (when-let [entities (engine/entities-with-component game :renderable)]
     (doseq [entity entities]
-      (let [texture (pixi/texture-from-image "img/Player.png")
-            sprite (pixi/create-sprite texture)]
-        (when-let [rotation (:rotation entity)]
-          (pixi/set-rotation sprite rotation))
-        (pixi/set-pos sprite (:x entity) (:y entity))
-        (pixi/set-scale sprite 0.8 0.8)
-        (pixi/set-anchor sprite 0.5 0.5)
-        (pixi/register-sprite stage sprite))))
+      (let [entity-renderer (entities/entity-renderer entity)]
+        (entities/create-entity entity-renderer game entity))))
   game)
 
 (defrecord PixiRenderer []
@@ -30,9 +25,9 @@
           renderer (pixi/create-renderer width height options)
           stage (pixi/create-stage)]
       (-> game
-          (register-entities stage)
           (assoc-in [:state-bag :pixi-renderer :renderer] renderer)
-          (assoc-in [:state-bag :pixi-renderer :stage] stage))))
+          (assoc-in [:state-bag :pixi-renderer :stage] stage)
+          (register-entities stage))))
 
   (process [this game]
     (pixi/render (get-in game [:state-bag :pixi-renderer :renderer])

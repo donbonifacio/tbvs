@@ -31,12 +31,15 @@
 (defcard-rg playground
     "Game building playground"
      (game-card {:props {:width 400 :height 400 :test true}
-                 :entities {:player {:x 200 :y 340 :on :air
+                 :entities {
+                            ;:ground {:on :ground
+                                     ;:type :trainning-ground
+                                     ;:components [[:renderable]]}
+                            :player {:x 200 :y 340 :on :air
                                      :type :player
                                      :components [[:renderable]]}}
                  :game-loop :pixi-game-loop
                  :system [:pixi-renderer]}))
-
 
 (defn main []
   ;; conditionally start the app based on whether the #main-app-area
