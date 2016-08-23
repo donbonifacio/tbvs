@@ -35,7 +35,7 @@
       (doall
         (for [x (range 10)
               y (range 10)]
-          (.drawRect graphics (* 50 x) (* 50 y) 50 50)))
+          (.drawRect graphics (+ 0 (* 50 x)) (+ 0 (* 50 y)) 50 50)))
       (pixi/register-sprite stage graphics))))
 
 (defn entity-renderer

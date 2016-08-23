@@ -30,9 +30,10 @@
      {:props {:width 400 :height 400 :test true}
               :entities {:ground {:on :ground
                                   :type :training-ground
-                                  :components [[:renderable]]}
+                                  :components [[:renderable]
+                                               [:ai]]}
                          :player {:x 200 :y 340 :on :air
                                   :type :player
                                   :components [[:renderable]]}}
               :game-loop :pixi-game-loop
-              :system [:pixi-renderer]}))
+              :system [:ai :pixi-renderer]}))
