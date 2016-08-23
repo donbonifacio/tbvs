@@ -25,8 +25,22 @@
   (create-entity [this game player]
     (create-movable-entity game player {:img "img/Player.png"})))
 
+(deftype TrainingGroundRenderer []
+  EntityRenderer
+  (create-entity [this game player]
+    (let [graphics (-> (new js/PIXI.Graphics)
+                       (.beginFill 0xFFFFFF)
+                       (.lineStyle 1 0x0000FF))
+          stage (get-in game [:state-bag :pixi-renderer :stage])]
+      (doall
+        (for [x (range 10)
+              y (range 10)]
+          (.drawRect graphics (* 50 x) (* 50 y) 50 50)))
+      (pixi/register-sprite stage graphics))))
+
 (defn entity-renderer
   "Gets an entity renderer for the given entity"
   [entity]
   (condp = (:type entity)
-    :player (->PlayerRenderer)))
+    :player (->PlayerRenderer)
+    :training-ground (->TrainingGroundRenderer)))
