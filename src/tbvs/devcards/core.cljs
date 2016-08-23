@@ -11,31 +11,31 @@
 
 (enable-console-print!)
 
-(defn canvas []
-             [:canvas {:width "400px"
-                       :height "400px"
-                       :style {:background-color "blue"}}])
+(defn canvas [game]
+             [:canvas {:width (str (-> game :props :width) "px")
+                       :height (str (-> game :props :height) "px")
+                       :style {}}])
 
-(defn animate [renderer stage bunny msg]
-  #_(println renderer stage bunny msg)
-  (pixi/render renderer stage)
-  (js/requestAnimationFrame #(animate renderer stage bunny msg)))
-
-(defcard-rg tests
-    "some docs"
-     (with-meta
+(defn game-card
+  "Creates a game to be wrapped on a card"
+  [game]
+  (with-meta
       canvas
       {:component-did-mount
         (fn [this]
-          (let [game (-> {:props {:width 400 :height 400 :test true}
-                          :entities {:player {:x 200 :y 340 :on :air
-                                              :type :player
-                                              :components [[:renderable]]}}
-                          :state-bag {:pixi-renderer {:dom-node (reagent/dom-node this)}}
-                          :game-loop :pixi-game-loop
-                          :system [:pixi-renderer]}
+          (let [game (-> game
+                         (assoc :state-bag {:pixi-renderer {:dom-node (reagent/dom-node this)}})
                          (game-creator/create)
                          (game/start))]))}))
+
+(defcard-rg playground
+    "Game building playground"
+     (game-card {:props {:width 400 :height 400 :test true}
+                 :entities {:player {:x 200 :y 340 :on :air
+                                     :type :player
+                                     :components [[:renderable]]}}
+                 :game-loop :pixi-game-loop
+                 :system [:pixi-renderer]}))
 
 
 (defn main []
