@@ -1,6 +1,7 @@
 (ns tbvs.game.core
   "Generic game handling utils"
-  (:require [tbvs.engine.protocols.game-system :as gs]))
+  (:require [tbvs.engine.protocols.game-system :as gs]
+            [tbvs.engine.protocols.game-loop :as gl]))
 
 (defn start-system
   "Inits a given system"
@@ -14,7 +15,12 @@
   [game]
   (->> (:system game)
        (reduce start-system game)
-       ((:game-loop-fn game))))
+       (gl/start (:game-loop game))))
+
+(defn stop
+  "Stops the given game"
+  [game]
+  (gl/stop (:game-loop game) game))
 
 (defn process-system
   "Processes a given system"
