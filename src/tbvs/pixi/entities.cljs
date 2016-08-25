@@ -40,23 +40,33 @@
   (update-entity [this game player]
     (update-movable-entity game player)))
 
-(deftype TrainingGroundRenderer []
-  EntityRenderer
-  (create-entity [this game entity]
-    (let [graphics (-> (new js/PIXI.Graphics)
+(defn- create-training-wall
+  "Creates a wall the size of the display"
+  [game entity stage key]
+  (let [graphics (-> (new js/PIXI.Graphics)
                        (.beginFill 0xFFFFFF)
-                       (.lineStyle 1 0x0000FF))
-          stage (get-in game [:state-bag :pixi-renderer :stage])]
+                       (.lineStyle 1 0x0000FF))]
       (doall
         (for [x (range 10)
               y (range 10)]
           (.drawRect graphics (+ 0 (* 50 x)) (+ 0 (* 50 y)) 50 50)))
       (pixi/register-sprite stage graphics)
-      (assoc-in game [:entities (:id entity) :pixi-display-obj] graphics)))
+      (assoc-in game [:entities (:id entity) key] graphics)))
+
+(deftype TrainingGroundRenderer []
+  EntityRenderer
+  (create-entity [this game entity]
+    (let [stage (get-in game [:state-bag :pixi-renderer :stage])
+          with-wall-1 (create-training-wall game entity stage :pixi-display-obj-1)
+          with-wall-2 (create-training-wall with-wall-1 entity stage :pixi-display-obj-2)]
+      with-wall-2))
 
   (update-entity [this game entity]
-    (let [sprite (get-in game [:entities (:id entity) :pixi-display-obj])]
-      (pixi/set-pos sprite 0 (:pos entity)))
+    (let [pos (mod (:pos entity) 400)
+          wall-1 (get-in game [:entities (:id entity) :pixi-display-obj-1])
+          wall-2 (get-in game [:entities (:id entity) :pixi-display-obj-2])]
+      (pixi/set-pos wall-1 0 pos)
+      (pixi/set-pos wall-2 0 (- pos 400)))
     game))
 
 (defn entity-renderer
