@@ -14,6 +14,15 @@
           game
           (engine/entities-with-component game :renderable)))
 
+(defn update-entities
+  "Updated the game entities for the renderer to display"
+  [game]
+  (reduce (fn [game entity]
+            (let [entity-renderer (entities/entity-renderer entity)]
+              (entities/update-entity entity-renderer game entity)))
+          game
+          (engine/entities-with-component game :renderable)))
+
 (defrecord PixiRenderer []
   gs/GameSystem
 
@@ -30,9 +39,10 @@
           (register-entities stage))))
 
   (process [this game]
-    (pixi/render (get-in game [:state-bag :pixi-renderer :renderer])
-                 (get-in game [:state-bag :pixi-renderer :stage]))
-    game))
+    (let [game (update-entities game)]
+      (pixi/render (get-in game [:state-bag :pixi-renderer :renderer])
+                   (get-in game [:state-bag :pixi-renderer :stage]))
+      game)))
 
 (defn create
   "Creates a new PixiRenderer"
