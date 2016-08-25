@@ -37,3 +37,17 @@
                                   :components [[:renderable]]}}
               :game-loop :pixi-game-loop
               :system [:ai :pixi-renderer]}))
+
+(defcard-rg big-background
+  "Background is now dynamic"
+   (helper/game-card
+     {:props {:width 600 :height 800 :test true}
+              :entities {:ground {:on :ground
+                                  :type :training-ground
+                                  :components [[:renderable]
+                                               [:ai]]}
+                         :player {:x 200 :y 340 :on :air
+                                  :type :player
+                                  :components [[:renderable]]}}
+              :game-loop :pixi-game-loop
+              :system [:ai :pixi-renderer]}))

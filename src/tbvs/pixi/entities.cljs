@@ -45,11 +45,14 @@
   [game entity stage key]
   (let [graphics (-> (new js/PIXI.Graphics)
                        (.beginFill 0xFFFFFF)
-                       (.lineStyle 1 0x0000FF))]
+                       (.lineStyle 1 0x0000FF))
+        square-size 50
+        width (get-in game [:props :width])
+        height (get-in game [:props :height])]
       (doall
-        (for [x (range 10)
-              y (range 10)]
-          (.drawRect graphics (+ 0 (* 50 x)) (+ 0 (* 50 y)) 50 50)))
+        (for [x (range (inc (int (/ width square-size))))
+              y (range (inc (int (/ height square-size))))]
+          (.drawRect graphics (+ 0 (* square-size x)) (+ 0 (* square-size y)) square-size square-size)))
       (pixi/register-sprite stage graphics)
       (assoc-in game [:entities (:id entity) key] graphics)))
 
@@ -62,11 +65,12 @@
       with-wall-2))
 
   (update-entity [this game entity]
-    (let [pos (mod (:pos entity) 400)
+    (let [height (get-in game [:props :height])
+          pos (mod (:pos entity) height)
           wall-1 (get-in game [:entities (:id entity) :pixi-display-obj-1])
           wall-2 (get-in game [:entities (:id entity) :pixi-display-obj-2])]
       (pixi/set-pos wall-1 0 pos)
-      (pixi/set-pos wall-2 0 (- pos 400)))
+      (pixi/set-pos wall-2 0 (- pos height)))
     game))
 
 (defn entity-renderer
