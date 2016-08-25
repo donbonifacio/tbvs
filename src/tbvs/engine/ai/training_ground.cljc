@@ -10,8 +10,8 @@
     game)
 
   (process [this game entity]
-    #_(prn (:id entity) entity (:game-id game))
-    game))
+    (let [new-entity (update entity :pos inc)]
+      (assoc-in game [:entities (:id entity)] new-entity))))
 
 (defn create
   "Creates a new trainning ground handler"

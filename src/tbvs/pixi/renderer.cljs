@@ -8,11 +8,11 @@
 (defn register-entities
   "Registers the game entities for the renderer to display"
   [game stage]
-  (when-let [entities (engine/entities-with-component game :renderable)]
-    (doseq [entity entities]
-      (let [entity-renderer (entities/entity-renderer entity)]
-        (entities/create-entity entity-renderer game entity))))
-  game)
+  (reduce (fn [game entity]
+            (let [entity-renderer (entities/entity-renderer entity)]
+              (entities/create-entity entity-renderer game entity)))
+          game
+          (engine/entities-with-component game :renderable)))
 
 (defrecord PixiRenderer []
   gs/GameSystem

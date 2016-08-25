@@ -18,7 +18,8 @@
     (pixi/set-pos sprite (:x entity) (:y entity))
     (pixi/set-scale sprite 0.8 0.8)
     (pixi/set-anchor sprite 0.5 0.5)
-    (pixi/register-sprite stage sprite)))
+    (pixi/register-sprite stage sprite)
+    (assoc-in game [:entities (:id entity) :pixi-display-obj] sprite)))
 
 (deftype PlayerRenderer []
   EntityRenderer
@@ -27,7 +28,7 @@
 
 (deftype TrainingGroundRenderer []
   EntityRenderer
-  (create-entity [this game player]
+  (create-entity [this game entity]
     (let [graphics (-> (new js/PIXI.Graphics)
                        (.beginFill 0xFFFFFF)
                        (.lineStyle 1 0x0000FF))
@@ -36,7 +37,8 @@
         (for [x (range 10)
               y (range 10)]
           (.drawRect graphics (+ 0 (* 50 x)) (+ 0 (* 50 y)) 50 50)))
-      (pixi/register-sprite stage graphics))))
+      (pixi/register-sprite stage graphics)
+      (assoc-in game [:entities (:id entity) :pixi-display-obj] graphics))))
 
 (defn entity-renderer
   "Gets an entity renderer for the given entity"
