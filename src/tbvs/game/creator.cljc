@@ -2,6 +2,7 @@
   "Creates and setups a new game"
   (:require [tbvs.pixi.renderer :as pixi-renderer]
             [tbvs.pixi.game-loop :as pixi-game-loop]
+            [tbvs.pixi.delta :as pixi-delta]
             [tbvs.engine.ai :as ai]))
 
 (defn add-id-to-entities
@@ -19,6 +20,8 @@
   (-> game
       (assoc :game-id (gensym "game"))
       (add-id-to-entities)
+      (assoc-in [:props :delta] 0.0166)
       (assoc-in [:game-loop] (pixi-game-loop/create))
+      (assoc-in [:state-bag :pixi-delta :handler] (pixi-delta/create))
       (assoc-in [:state-bag :pixi-renderer :handler] (pixi-renderer/create))
       (assoc-in [:state-bag :ai :handler] (ai/create))))

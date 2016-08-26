@@ -10,7 +10,9 @@
     game)
 
   (process [this game entity]
-    (let [new-entity (update entity :pos inc)]
+    (let [delta (get-in game [:props :delta])
+          delta-inc (* delta 60)
+          new-entity (update entity :pos + delta-inc)]
       (assoc-in game [:entities (:id entity)] new-entity))))
 
 (defn create
