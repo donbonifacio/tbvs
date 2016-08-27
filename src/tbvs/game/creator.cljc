@@ -21,6 +21,7 @@
       (assoc :game-id (gensym "game"))
       (add-id-to-entities)
       (assoc-in [:props :delta] 0.0166)
+      (assoc-in [:props :movement-delta] 0.0166)
       (assoc-in [:game-loop] (pixi-game-loop/create))
       (assoc-in [:state-bag :pixi-delta :handler] (pixi-delta/create))
       (assoc-in [:state-bag :pixi-renderer :handler] (pixi-renderer/create))

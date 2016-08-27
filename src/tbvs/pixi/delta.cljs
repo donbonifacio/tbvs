@@ -20,6 +20,7 @@
           delta (/ (- now then) 1000)]
       (-> game
           (assoc-in [:props :delta] delta)
+          (assoc-in [:props :movement-delta] delta)
           (assoc-in [:state-bag :pixi-delta :then] now)))))
 
 (defn create
