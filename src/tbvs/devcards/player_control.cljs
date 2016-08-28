@@ -47,6 +47,6 @@
               :events [{:type :input :entity :player :go :right}]
               :game-loop :pixi-game-loop
               :system [:pixi-delta
-                       :player-actions
+                       :player
                        :ai
                        :pixi-renderer]}))
