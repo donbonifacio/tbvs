@@ -42,11 +42,13 @@
                                                [:ai]]}
                          :player {:x 400 :y 340 :on :air
                                   :type :player
-                                  :components [[:renderable]]}}
+                                  :components [[:player]
+                                               [:renderable]]}}
               :state :moving
               :events [{:type :input :entity :player :go :right}]
               :game-loop :pixi-game-loop
               :system [:pixi-delta
                        :player
                        :ai
+                       :turn-state-machine
                        :pixi-renderer]}))

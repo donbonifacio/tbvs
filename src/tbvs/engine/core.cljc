@@ -1,18 +1,5 @@
 (ns tbvs.engine.core)
 
-{:entities {:world {:components [[:scrolable]
-                                 [:renderable {:on :ground
-                                               :custom :playground}]]}
-            :player {:state {:x 1 :y 2}
-                     :components [[:movable]
-                                  [:renderable {:on :air
-                                                :asset "player"}]
-                                  [:shooter]
-                                  [:animatable]
-                                  [:destroyable]]}}
- :input [[:move :left]]
- :system [:input :ai :move :render]}
-
 (defn entities-with-component
   "Gets the entities that match the given component"
   [game component]
@@ -23,3 +10,8 @@
                         (some #{component})))
                    entities)
          (map second))))
+
+(defn entity-by-id
+  "Gets the entity with the given id"
+  [game entity-id]
+  (get-in game [:entities entity-id]))

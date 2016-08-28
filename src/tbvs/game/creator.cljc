@@ -4,6 +4,7 @@
             [tbvs.pixi.game-loop :as pixi-game-loop]
             [tbvs.pixi.delta :as pixi-delta]
             [tbvs.engine.player :as player]
+            [tbvs.engine.turn-state-machine :as turn-state-machine]
             [tbvs.engine.ai :as ai]))
 
 (defn add-id-to-entities
@@ -27,5 +28,6 @@
       (assoc-in [:game-loop] (pixi-game-loop/create))
       (assoc-in [:state-bag :pixi-delta :handler] (pixi-delta/create))
       (assoc-in [:state-bag :pixi-renderer :handler] (pixi-renderer/create))
+      (assoc-in [:state-bag :turn-state-machine :handler] (turn-state-machine/create))
       (assoc-in [:state-bag :player :handler] (player/create))
       (assoc-in [:state-bag :ai :handler] (ai/create))))
