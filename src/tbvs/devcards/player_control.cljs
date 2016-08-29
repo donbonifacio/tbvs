@@ -51,4 +51,5 @@
                        :player
                        :ai
                        :turn-state-machine
-                       :pixi-renderer]}))
+                       :pixi-renderer]}
+     {:controls :keyboard}))
