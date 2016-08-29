@@ -31,6 +31,11 @@
   (set! (-> sprite .-position .-x) x)
   (set! (-> sprite .-position .-y) y))
 
+(defn set-alpha
+  "Sets the alpha of the sprite"
+  [sprite alpha]
+  (set! (-> sprite .-alpha) alpha))
+
 (defn set-scale
   "Sets the scale of a sprite"
   [sprite scale-x scale-y]

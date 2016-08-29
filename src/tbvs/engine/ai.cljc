@@ -3,12 +3,14 @@
   (:require [tbvs.engine.protocols.game-system :as gs]
             [tbvs.engine.protocols.game-entity :as ge]
             [tbvs.engine.core :as engine]
+            [tbvs.engine.ai.enemy :as enemy]
             [tbvs.engine.ai.training-ground :as training-ground]))
 
 (defn entity-handler
   "Gets a hander for the given entity"
   [game entity]
   (condp = (:type entity)
+    :enemy (enemy/create)
     :training-ground (training-ground/create)))
 
 (defn process-entity

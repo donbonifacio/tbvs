@@ -3,6 +3,7 @@
    [reagent.core :as reagent]
    [tbvs.devcards.training-ground]
    [tbvs.devcards.player-control]
+   [tbvs.devcards.basic-enemies]
    [tbvs.pixi.core :as pixi]
    [tbvs.game.creator :as game-creator]
    [tbvs.engine.core :as engine]

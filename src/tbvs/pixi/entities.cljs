@@ -40,15 +40,23 @@
   (update-entity [this game player]
     (update-movable-entity game player)))
 
+(deftype EnemyRenderer []
+  EntityRenderer
+  (create-entity [this game enemy]
+    (create-movable-entity game enemy {:img "img/Enemy.png"}))
+  (update-entity [this game enemy]
+    (update-movable-entity game enemy)))
+
 (defn- create-training-wall
   "Creates a wall the size of the display"
   [game entity stage key]
   (let [graphics (-> (new js/PIXI.Graphics)
                        (.beginFill 0xFFFFFF)
-                       (.lineStyle 1 0x0000FF))
+                       (.lineStyle 1 0xccffff))
         square-size 50
         width (get-in game [:props :width])
         height (get-in game [:props :height])]
+      (pixi/set-alpha graphics 1)
       (doall
         (for [x (range (inc (int (/ width square-size))))
               y (range (inc (int (/ height square-size))))]
@@ -78,4 +86,5 @@
   [entity]
   (condp = (:type entity)
     :player (->PlayerRenderer)
+    :enemy (->EnemyRenderer)
     :training-ground (->TrainingGroundRenderer)))
