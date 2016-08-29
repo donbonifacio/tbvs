@@ -5,6 +5,24 @@
             [tbvs.engine.core :as engine]
             [tbvs.engine.ai.training-ground :as training-ground]))
 
+(defn wait-for-input
+  "Sets the game in a state for input"
+  [game]
+  (-> game
+      (assoc-in [:props :movement-delta] 0)
+      (assoc-in [:props :state] :waiting)))
+
+(defn move-delta
+  "Moves the world delta"
+  [game]
+  (let [delta (get-in game [:props :delta])
+        movement-delta-counter (or (get-in game [:props :movement-delta-counter]) 0)]
+    (if (> movement-delta-counter 1)
+      (wait-for-input game)
+      (-> game
+          (assoc-in [:props :movement-delta-counter] (+ delta movement-delta-counter))
+          (assoc-in [:props :movement-delta] delta)))))
+
 (defrecord TurnStateMachineSystem []
   gs/GameSystem
 
@@ -13,12 +31,19 @@
 
   (process [this game]
     (let [events (:events game)
+          state (get-in game [:props :state])
           turn-event (first (filter #(= (:type %) :advance-turn) events))]
-      (if turn-event
-        (-> game
-            (assoc :events [])
-            (assoc-in [:props :state] :moving))
-        game))))
+      (cond
+        turn-event
+          (-> game
+              (assoc :events [])
+              (assoc-in [:props :state] :moving))
+
+        (= :moving state)
+          (move-delta game)
+
+        :else
+          game))))
 
 (defn create
   "Creates a new TurnStateMachineSystem"
