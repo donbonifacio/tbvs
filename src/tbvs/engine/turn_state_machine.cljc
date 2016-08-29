@@ -13,16 +13,21 @@
       (assoc-in [:props :movement-delta-counter] 0)
       (assoc-in [:props :state] :waiting)))
 
+(defn move-world
+  "Moves the world"
+  [game delta movement-delta-counter]
+  (-> game
+      (assoc-in [:props :movement-delta-counter] (+ delta movement-delta-counter))
+      (assoc-in [:props :movement-delta] delta)))
+
 (defn move-delta
   "Moves the world delta"
   [game]
   (let [delta (get-in game [:props :delta])
         movement-delta-counter (or (get-in game [:props :movement-delta-counter]) 0)]
-    (if (> movement-delta-counter 1)
+    (if (> movement-delta-counter 0.3)
       (wait-for-input game)
-      (-> game
-          (assoc-in [:props :movement-delta-counter] (+ delta movement-delta-counter))
-          (assoc-in [:props :movement-delta] delta)))))
+      (move-world game delta movement-delta-counter))))
 
 (defrecord TurnStateMachineSystem []
   gs/GameSystem

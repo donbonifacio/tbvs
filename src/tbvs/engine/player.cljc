@@ -28,10 +28,12 @@
   "Moves all players"
   [game]
   (let [player (engine/entity-by-id game :player)
-        [dir-x dir-y] (:dir player)]
+        [dir-x dir-y] (:dir player)
+        delta (get-in game [:props :movement-delta])
+        delta-inc (* delta 200)]
     (-> game
-        (update-in [:entities :player :x] + dir-x)
-        (update-in [:entities :player :y] + dir-y))))
+        (update-in [:entities :player :x] + (* dir-x delta-inc))
+        (update-in [:entities :player :y] + (* dir-y delta-inc)))))
 
 (defrecord PlayerSystem []
   gs/GameSystem
