@@ -10,6 +10,7 @@
   [game]
   (-> game
       (assoc-in [:props :movement-delta] 0)
+      (assoc-in [:props :movement-delta-counter] 0)
       (assoc-in [:props :state] :waiting)))
 
 (defn move-delta

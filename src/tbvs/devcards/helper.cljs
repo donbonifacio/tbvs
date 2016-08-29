@@ -10,14 +10,19 @@
   (:require-macros
    [devcards.core :as dc :refer [defcard defcard-rg deftest]]))
 
-(defn canvas [game options]
-  [:div {:id (:game-id game)}
-    [:canvas {:width (str (-> game :props :width) "px")
-              :height (str (-> game :props :height) "px")
+(defn go-event
+  "Generates a go event"
+  [game direction]
+  (game/register-event game {:type :input :entity :player :go direction}))
+
+(defn canvas [game-atom options]
+  [:div {:id (:game-id @game-atom)}
+    [:canvas {:width (str (-> @game-atom :props :width) "px")
+              :height (str (-> @game-atom :props :height) "px")
               :style {}}]
     (when (:controls options)
       [:div
-       [:input {:type "button" :value "up"}]
+       [:input {:type "button" :value "up" :on-click #(go-event @game-atom :up)}]
        [:div
          [:input {:type "button" :value "left"}]
          [:input {:type "button" :value "right"}]]
@@ -32,7 +37,7 @@
          game (assoc game :game-id game-id)
          game-atom (atom nil)]
      (with-meta
-         #(canvas game options)
+         #(canvas game-atom options)
          {:component-did-mount
            (fn [this]
              (let [dom-node (reagent/dom-node this)

@@ -22,6 +22,11 @@
   [game]
   (gl/stop (:game-loop game) game))
 
+(defn register-event
+  "Registers an event on the game"
+  [game event]
+  (gl/register-event (:game-loop game) game event))
+
 (defn process-system
   "Processes a given system"
   [game system-key]

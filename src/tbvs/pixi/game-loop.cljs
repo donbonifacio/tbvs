@@ -5,11 +5,19 @@
             [tbvs.pixi.core :as pixi]))
 
 (def running-games (atom {}))
+(def events (atom {}))
 
 (defn process [game]
-  (let [running-games @running-games]
-    (if (get running-games (:game-id game))
-      (let [new-game (game/next-state game)]
+  (let [game-id (:game-id game)
+        running-games @running-games
+        current-events @events]
+    (swap! events dissoc game-id)
+    (if (get running-games game-id)
+      (let [event (get current-events game-id)
+            game (if event
+                   (update-in game [:events] conj event)
+                   game)
+            new-game (game/next-state game)]
         (js/requestAnimationFrame #(process new-game))
         new-game)
       (println "[PixiGameLoop] Next game loop bailed" (:game-id game)))))
@@ -21,6 +29,10 @@
     (swap! running-games assoc (:game-id game) game)
     (println "[PixiGameLoop] Start" (:game-id game))
     (process game))
+
+  (register-event [this game event]
+    (swap! events assoc (:game-id game) event)
+    game)
 
   (stop [this game]
     (swap! running-games dissoc (:game-id game))
