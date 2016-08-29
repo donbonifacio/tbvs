@@ -24,9 +24,9 @@
       [:div
        [:input {:type "button" :value "up" :on-click #(go-event @game-atom :up)}]
        [:div
-         [:input {:type "button" :value "left"}]
-         [:input {:type "button" :value "right"}]]
-       [:input {:type "button" :value "down"}]])])
+         [:input {:type "button" :value "left" :on-click #(go-event @game-atom :left)}]
+         [:input {:type "button" :value "right" :on-click #(go-event @game-atom :right)}]]
+       [:input {:type "button" :value "down" :on-click #(go-event @game-atom :down)}]])])
 
 (defn game-card
   "Creates a game to be wrapped on a card"

@@ -5,6 +5,15 @@
             [tbvs.engine.core :as engine]
             [tbvs.engine.ai.training-ground :as training-ground]))
 
+(defn direction->vector
+  "Gets the direction as a vector"
+  [event]
+  (condp = (:go event)
+    :up [0 -1]
+    :down [0 1]
+    :left [-1 0]
+    :right [1 0]))
+
 (defn set-player-direction
   "Sets the moving vector for a player"
   [game event]
@@ -12,10 +21,8 @@
         player (engine/entity-by-id game entity-id)]
     (assert player)
     (-> game
-        (update-in [:entities entity-id] assoc :dir [1 0])
-        (update-in [:events] conj {:type :advance-turn}))
-    )
-  )
+        (update-in [:entities entity-id] assoc :dir (direction->vector event))
+        (update-in [:events] conj {:type :advance-turn}))))
 
 (defn move-players
   "Moves all players"
@@ -35,7 +42,6 @@
   (process [this game]
     (let [state (get-in game [:props :state])
           go-event (first (filter :go (:events game)))]
-      #_(prn (:events game))
       (cond
         (some? go-event) (set-player-direction game go-event)
         (= :moving state) (move-players game)
