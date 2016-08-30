@@ -31,7 +31,7 @@
   [game]
   (reduce (fn [game system-key]
             (if (keyword? system-key)
-              (let [handler-factory (system-handler system-keyword)]
+              (let [handler-factory (system-handler system-key)]
                 (assoc-in game [:state-bag system-key :handler] (handler-factory)))
               game))
           game

@@ -3,10 +3,20 @@
   (:require [tbvs.engine.protocols.game-system :as gs]
             [tbvs.engine.protocols.game-loop :as gl]))
 
+(defn system-handler
+  "Returns a system handler"
+  [game system-key]
+  (cond
+    (keyword? system-key)
+      (get-in game [:state-bag system-key :handler])
+
+    (gs/game-system? system-key)
+      system-key))
+
 (defn start-system
   "Inits a given system"
   [game system-key]
-  (if-let [handler (get-in game [:state-bag system-key :handler])]
+  (if-let [handler (system-handler game system-key)]
     (gs/start handler game)
     game))
 
@@ -30,7 +40,7 @@
 (defn process-system
   "Processes a given system"
   [game system-key]
-  (if-let [handler (get-in game [:state-bag system-key :handler])]
+  (if-let [handler (system-handler game system-key)]
     (gs/process handler game)
     game))
 

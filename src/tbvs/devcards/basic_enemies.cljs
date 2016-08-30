@@ -7,6 +7,7 @@
    [tbvs.engine.core :as engine]
    [tbvs.game.core :as game]
    [tbvs.devcards.helper :as helper]
+   [tbvs.engine.protocols.game-system :as gs]
    [sablono.core :as sab :include-macros true])
   (:require-macros
    [devcards.core :as dc :refer [defcard defcard-rg deftest]]))
@@ -19,12 +20,6 @@
                                   :type :training-ground
                                   :components [[:renderable]
                                                [:ai]]}
-                         :enemy {:on :air
-                                 :x 100 :y 100
-                                 :type :enemy
-                                 :components [[:renderable]
-                                              [:ai]]}
-
                          :enemy-2 {:on :air
                                    :x 200 :y 0
                                    :type :enemy
@@ -34,5 +29,10 @@
               :state :moving
               :game-loop :pixi-game-loop
               :system [:pixi-delta
+                       (reify gs/GameSystem
+                         (start [this game]
+                           game)
+                         (process [this game]
+                           game))
                        :ai
                        :pixi-renderer]}))
