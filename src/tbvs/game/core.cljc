@@ -47,4 +47,21 @@
 (defn next-state
   "Advances the game to the next state"
   [game]
-  (reduce process-system game (:system game)))
+  (reduce process-system
+          (assoc game :events [])
+          (:system game)))
+
+(defn setup-entity
+  "Prepares the entity to enter the game"
+  [entity]
+  (cond-> entity
+    (nil? (:id entity))
+      (assoc :id (gensym (:type entity)))))
+
+(defn register-entity
+  "Registers a new entity on the game's flow"
+  [game entity]
+  (let [entity (setup-entity entity)]
+    (-> game
+        (update :entities assoc (:id entity) entity)
+        (update :events conj {:type :add-entity :entity entity}))))

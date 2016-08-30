@@ -5,12 +5,16 @@
             [tbvs.pixi.entities :as entities]
             [tbvs.pixi.core :as pixi]))
 
+(defn register-entity
+  "Registers a specific entity on the renderer"
+  [game entity]
+  (let [entity-renderer (entities/entity-renderer entity)]
+    (entities/create-entity entity-renderer game entity)))
+
 (defn register-entities
   "Registers the game entities for the renderer to display"
   [game stage]
-  (reduce (fn [game entity]
-            (let [entity-renderer (entities/entity-renderer entity)]
-              (entities/create-entity entity-renderer game entity)))
+  (reduce register-entity
           game
           (engine/entities-with-component game :renderable)))
 
@@ -22,6 +26,16 @@
               (entities/update-entity entity-renderer game entity)))
           game
           (engine/entities-with-component game :renderable)))
+
+(defn handle-events
+  "Handles events on the bus that relates to the renderer"
+  [game]
+  (reduce (fn [game event]
+            (if (= :add-entity (:type event))
+              (register-entity game (:entity event))
+              game))
+          game
+          (:events game)))
 
 (defrecord PixiRenderer []
   gs/GameSystem
@@ -39,7 +53,9 @@
           (register-entities stage))))
 
   (process [this game]
-    (let [game (update-entities game)]
+    (let [game (-> game
+                   (handle-events)
+                   (update-entities))]
       (pixi/render (get-in game [:state-bag :pixi-renderer :renderer])
                    (get-in game [:state-bag :pixi-renderer :stage]))
       game)))

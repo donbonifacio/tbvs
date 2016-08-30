@@ -13,19 +13,13 @@
    [devcards.core :as dc :refer [defcard defcard-rg deftest]]))
 
 (defcard-rg basic-enemy
-  "Basic enemy"
+  "Basic enemies showing up"
    (helper/game-card
      {:props {:width 800 :height 400 :test true}
               :entities {:ground {:on :ground
                                   :type :training-ground
                                   :components [[:renderable]
-                                               [:ai]]}
-                         :enemy-2 {:on :air
-                                   :x 200 :y 0
-                                   :type :enemy
-                                   :components [[:renderable]
-                                                [:ai]]}
-                         }
+                                               [:ai]]}}
               :state :moving
               :game-loop :pixi-game-loop
               :system [:pixi-delta
@@ -33,6 +27,19 @@
                          (start [this game]
                            game)
                          (process [this game]
-                           game))
+                           (let [span (get-in game [:state-bag :custom :span])
+                                 index (mod (get-in game [:state-bag :custom :index]) 8)
+                                 delta (get-in game [:props :movement-delta])
+                                 new-span (+ span delta)]
+                             (if (> new-span 0.5)
+                               (-> game
+                                   (game/register-entity {:on :air
+                                                          :x (+ 50 (* index 100)) :y -50
+                                                          :type :enemy
+                                                          :components [[:renderable]
+                                                                       [:ai]]})
+                                   (assoc-in [:state-bag :custom :index] (inc index))
+                                   (assoc-in [:state-bag :custom :span] 0))
+                               (assoc-in game [:state-bag :custom :span] new-span)))))
                        :ai
                        :pixi-renderer]}))
