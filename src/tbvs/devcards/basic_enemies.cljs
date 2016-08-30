@@ -23,7 +23,14 @@
                                  :x 100 :y 100
                                  :type :enemy
                                  :components [[:renderable]
-                                              [:ai]]}}
+                                              [:ai]]}
+
+                         :enemy-2 {:on :air
+                                   :x 200 :y 0
+                                   :type :enemy
+                                   :components [[:renderable]
+                                                [:ai]]}
+                         }
               :state :moving
               :game-loop :pixi-game-loop
               :system [:pixi-delta

@@ -16,6 +16,27 @@
                game
                entities)))
 
+(defn system-handler
+  "Returns a system handler for a system key"
+  [system-key]
+  (condp = system-key
+    :pixi-delta pixi-delta/create
+    :pixi-renderer pixi-renderer/create
+    :turn-state-machine turn-state-machine/create
+    :player player/create
+    :ai ai/create))
+
+(defn add-systems
+  "Adds the registered systems to the game"
+  [game]
+  (reduce (fn [game system-key]
+            (if (keyword? system-key)
+              (let [handler-factory (system-handler system-keyword)]
+                (assoc-in game [:state-bag system-key :handler] (handler-factory)))
+              game))
+          game
+          (:system game)))
+
 (defn create
   "Creates and setups a new game"
   [game]
@@ -26,8 +47,4 @@
       (assoc-in [:props :delta] 0.0166)
       (assoc-in [:props :movement-delta] 0.0166)
       (assoc-in [:game-loop] (pixi-game-loop/create))
-      (assoc-in [:state-bag :pixi-delta :handler] (pixi-delta/create))
-      (assoc-in [:state-bag :pixi-renderer :handler] (pixi-renderer/create))
-      (assoc-in [:state-bag :turn-state-machine :handler] (turn-state-machine/create))
-      (assoc-in [:state-bag :player :handler] (player/create))
-      (assoc-in [:state-bag :ai :handler] (ai/create))))
+      (add-systems)))
