@@ -52,4 +52,5 @@
                        :ai
                        :turn-state-machine
                        :pixi-renderer]}
-     {:controls :keyboard}))
+     {:controls :keyboard
+      :stats true}))

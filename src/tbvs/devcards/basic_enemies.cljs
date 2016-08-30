@@ -42,4 +42,5 @@
                                    (assoc-in [:state-bag :custom :span] 0))
                                (assoc-in game [:state-bag :custom :span] new-span)))))
                        :ai
-                       :pixi-renderer]}))
+                       :pixi-renderer]}
+     {:stats true}))

@@ -15,8 +15,8 @@
     (if (get running-games game-id)
       (let [event (get current-events game-id)
             game (if event
-                   (update-in game [:events] conj event)
-                   game)
+                   (assoc game :events [event])
+                   (assoc game :events []))
             new-game (game/next-state game)]
         (js/requestAnimationFrame #(process new-game))
         new-game)

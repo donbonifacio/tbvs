@@ -48,7 +48,7 @@
   "Advances the game to the next state"
   [game]
   (reduce process-system
-          (assoc game :events [])
+          game
           (:system game)))
 
 (defn setup-entity
