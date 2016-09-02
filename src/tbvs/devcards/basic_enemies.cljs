@@ -25,5 +25,6 @@
               :system [:pixi-delta
                        (helper/enemy-rain-spawner)
                        :ai
+                       (helper/set-state :moving)
                        :pixi-renderer]}
      {:stats true}))

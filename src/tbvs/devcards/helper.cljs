@@ -70,7 +70,7 @@
           :component-will-unmount
             (fn [this]
               (game/stop @game-atom))}))))
- 
+
 (defn enemy-rain-spawner
   []
   (reify gs/GameSystem
@@ -91,3 +91,11 @@
              (assoc-in [:state-bag :custom :index] (inc index))
              (assoc-in [:state-bag :custom :span] 0))
          (assoc-in game [:state-bag :custom :span] new-span))))))
+
+(defn set-state
+  [state]
+  (reify gs/GameSystem
+   (start [this game]
+     game)
+   (process [this game]
+     (assoc-in game [:props :state] state))))
