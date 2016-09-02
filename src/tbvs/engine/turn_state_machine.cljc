@@ -42,7 +42,6 @@
       (cond
         turn-event
           (-> game
-              (assoc :events [])
               (assoc-in [:props :state] :moving))
 
         (= :moving state)

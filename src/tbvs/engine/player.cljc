@@ -3,7 +3,24 @@
   (:require [tbvs.engine.protocols.game-system :as gs]
             [tbvs.engine.protocols.game-entity :as ge]
             [tbvs.engine.core :as engine]
+            [tbvs.game.core :as game]
+            [tbvs.engine.templates :as templates]
             [tbvs.engine.ai.training-ground :as training-ground]))
+
+(defn fire
+  "Fires a projectile"
+  [game event]
+  (let [player (engine/entity-by-id game :player)]
+    (-> game
+        (game/register-entity (templates/projectile {:x (- (:x player) 47)
+                                                     :y (:y player)
+                                                     :rotation 3
+                                                     :dir -1}))
+        (game/register-entity (templates/projectile {:x (+ (:x player) 47)
+                                                     :y (:y player)
+                                                     :rotation 3
+                                                     :dir -1}))
+        (update-in [:events] conj {:type :advance-turn}))))
 
 (defn direction->vector
   "Gets the direction as a vector"
@@ -43,9 +60,10 @@
 
   (process [this game]
     (let [state (get-in game [:props :state])
-          go-event (first (filter :go (:events game)))]
+          event (first (filter (fn [event] (= :player (:entity event))) (:events game)))]
       (cond
-        (some? go-event) (set-player-direction game go-event)
+        (:go event) (set-player-direction game event)
+        (:fire-type event) (fire game  event)
         (= :moving state) (move-players game)
         :else game))))
 

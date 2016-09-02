@@ -16,6 +16,11 @@
   [game direction]
   (game/register-event game {:type :input :entity :player :go direction}))
 
+(defn fire-event
+  "Generates a fire event"
+  [game fire-type]
+  (game/register-event game {:type :fire :entity :player :fire-type fire-type}))
+
 (defn game-recorder
   "GameSystem that records a game on a ratom"
   [ratom]
@@ -32,6 +37,8 @@
               :style {}}]
     (when (:controls options)
       [:div
+       [:input {:type "button" :value "fire-1" :on-click #(fire-event @game-atom :fire-1)}]
+       [:br]
        [:input {:type "button" :value "up" :on-click #(go-event @game-atom :up)}]
        [:div
          [:input {:type "button" :value "left" :on-click #(go-event @game-atom :left)}]

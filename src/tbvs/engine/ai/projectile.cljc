@@ -11,7 +11,8 @@
 
   (process [this game entity]
     (let [delta (get-in game [:props :movement-delta])
-          delta-inc (* delta 200)
+          dir (or (:dir entity) 1)
+          delta-inc (* delta 200 dir)
           new-entity (update entity :y + delta-inc)]
       (cond
         (> (:y entity) (+ (get-in game [:props :height]) 100))
