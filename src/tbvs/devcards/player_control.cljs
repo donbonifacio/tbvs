@@ -3,6 +3,7 @@
    [reagent.core :as reagent]
    [tbvs.pixi.core :as pixi]
    [devcards.core :as dc]
+   [tbvs.engine.templates :as templates]
    [tbvs.game.creator :as game-creator]
    [tbvs.engine.core :as engine]
    [tbvs.game.core :as game]
@@ -36,20 +37,14 @@
       can map to different players or even other entity types (like controllable missiles)"
    (helper/game-card
      {:props {:width 800 :height 400 :test true}
-              :entities {:ground {:on :ground
-                                  :type :training-ground
-                                  :components [[:renderable]
-                                               [:ai]]}
-                         :player {:x 400 :y 340 :on :air
-                                  :type :player
-                                  :components [[:player]
-                                               [:renderable]]}}
-              :events [{:type :input :entity :player :go :right}]
-              :game-loop :pixi-game-loop
-              :system [:pixi-delta
-                       :player
-                       :ai
-                       :turn-state-machine
-                       :pixi-renderer]}
+      :entities {:ground (templates/training-ground)
+                 :player (templates/player {:x 400 :y 340})}
+      :events [{:type :input :entity :player :go :right}]
+      :game-loop :pixi-game-loop
+      :system [:pixi-delta
+               :player
+               :ai
+               :turn-state-machine
+               :pixi-renderer]}
      {:controls :keyboard
       :stats true}))
