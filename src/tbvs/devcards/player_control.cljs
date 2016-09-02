@@ -44,7 +44,6 @@
                                   :type :player
                                   :components [[:player]
                                                [:renderable]]}}
-              :state :moving
               :events [{:type :input :entity :player :go :right}]
               :game-loop :pixi-game-loop
               :system [:pixi-delta

@@ -71,3 +71,23 @@
             (fn [this]
               (game/stop @game-atom))}))))
  
+(defn enemy-rain-spawner
+  []
+  (reify gs/GameSystem
+   (start [this game]
+     game)
+   (process [this game]
+     (let [span (get-in game [:state-bag :custom :span])
+           index (mod (get-in game [:state-bag :custom :index]) 8)
+           delta (get-in game [:props :movement-delta])
+           new-span (+ span delta)]
+       (if (> new-span 0.5)
+         (-> game
+             (game/register-entity {:on :air
+                                    :x (+ 50 (* index 100)) :y -50
+                                    :type :enemy
+                                    :components [[:renderable]
+                                                 [:ai]]})
+             (assoc-in [:state-bag :custom :index] (inc index))
+             (assoc-in [:state-bag :custom :span] 0))
+         (assoc-in game [:state-bag :custom :span] new-span))))))

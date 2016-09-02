@@ -1,4 +1,4 @@
-(ns tbvs.devcards.basic-enemies
+(ns tbvs.devcards.test-level
   (:require
    [reagent.core :as reagent]
    [tbvs.pixi.core :as pixi]
@@ -12,18 +12,23 @@
   (:require-macros
    [devcards.core :as dc :refer [defcard defcard-rg deftest]]))
 
-(defcard-rg basic-enemy
-  "Basic enemies showing up"
+(defcard-rg test-level
    (helper/game-card
-     {:props {:width 800 :height 600 :test false :state :moving}
+     {:props {:width 800 :height 600 :test false}
               :entities {:ground {:on :ground
                                   :type :training-ground
                                   :components [[:renderable]
-                                               [:ai]]}}
-              :state :moving
+                                               [:ai]]}
+                         :player {:x 400 :y 540 :on :air
+                                  :type :player
+                                  :components [[:player]
+                                               [:renderable]]}}
               :game-loop :pixi-game-loop
               :system [:pixi-delta
                        (helper/enemy-rain-spawner)
+                       :player
                        :ai
+                       :turn-state-machine
                        :pixi-renderer]}
-     {:stats true}))
+     {:stats true
+      :controls :keyboard}))
