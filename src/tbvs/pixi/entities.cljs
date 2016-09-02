@@ -6,7 +6,8 @@
 
 (defprotocol EntityRenderer
   (create-entity [this game entity] "Creates and registers and entity on the stage")
-  (update-entity [this game entity] "Updates entity attributes"))
+  (update-entity [this game entity] "Updates entity attributes")
+  (remove-entity [this game entity] "Removes an entity from the stage"))
 
 (defn- create-movable-entity
   "Creates a typical entity that moves"
@@ -21,6 +22,13 @@
     (pixi/set-anchor sprite 0.5 0.5)
     (pixi/register-sprite stage sprite)
     (assoc-in game [:entities (:id entity) :pixi-display-obj] sprite)))
+
+(defn- remove-entity-from-stage
+  "Removes an entity"
+  [game entity]
+  (pixi/destroy (get-in game [:state-bag :pixi-renderer :stage])
+                (:pixi-display-obj entity))
+  game)
 
 (defn- update-movable-entity
   "Updates a typical entity that moves"
@@ -38,14 +46,27 @@
   (create-entity [this game player]
     (create-movable-entity game player {:img "img/Player.png"}))
   (update-entity [this game player]
-    (update-movable-entity game player)))
+    (update-movable-entity game player))
+  (remove-entity [this game player]
+    (remove-entity-from-stage game player)))
 
 (deftype EnemyRenderer []
   EntityRenderer
   (create-entity [this game enemy]
     (create-movable-entity game enemy {:img "img/Enemy.png"}))
   (update-entity [this game enemy]
-    (update-movable-entity game enemy)))
+    (update-movable-entity game enemy))
+  (remove-entity [this game entity]
+    (remove-entity-from-stage game entity)))
+
+(deftype ProjectileRenderer []
+  EntityRenderer
+  (create-entity [this game projectile]
+    (create-movable-entity game projectile {:img (str "img/" (:display projectile) ".png")}))
+  (update-entity [this game projectile]
+    (update-movable-entity game projectile))
+  (remove-entity [this game entity]
+    (remove-entity-from-stage game entity)))
 
 (defn- create-training-wall
   "Creates a wall the size of the display"
@@ -79,6 +100,9 @@
           wall-2 (get-in game [:entities (:id entity) :pixi-display-obj-2])]
       (pixi/set-pos wall-1 0 pos)
       (pixi/set-pos wall-2 0 (- pos height)))
+    game)
+
+  (remove-entity [this game entity]
     game))
 
 (defn entity-renderer
@@ -87,4 +111,5 @@
   (condp = (:type entity)
     :player (->PlayerRenderer)
     :enemy (->EnemyRenderer)
+    :projectile (->ProjectileRenderer)
     :training-ground (->TrainingGroundRenderer)))

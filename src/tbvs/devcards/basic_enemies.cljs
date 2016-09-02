@@ -15,7 +15,7 @@
 (defcard-rg basic-enemy
   "Basic enemies showing up"
    (helper/game-card
-     {:props {:width 800 :height 400 :test true}
+     {:props {:width 800 :height 600 :test false}
               :entities {:ground {:on :ground
                                   :type :training-ground
                                   :components [[:renderable]

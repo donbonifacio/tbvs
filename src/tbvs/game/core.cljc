@@ -65,3 +65,11 @@
     (-> game
         (update :entities assoc (:id entity) entity)
         (update :events conj {:type :add-entity :entity entity}))))
+
+(defn remove-entity
+  "Removes an entity on the game's flow"
+  [game entity]
+  (let [entity (setup-entity entity)]
+    (-> game
+        (update :entities dissoc (:id entity))
+        (update :events conj {:type :remove-entity :entity entity}))))

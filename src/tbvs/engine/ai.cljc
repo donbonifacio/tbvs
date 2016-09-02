@@ -4,6 +4,7 @@
             [tbvs.engine.protocols.game-entity :as ge]
             [tbvs.engine.core :as engine]
             [tbvs.engine.ai.enemy :as enemy]
+            [tbvs.engine.ai.projectile :as projectile]
             [tbvs.engine.ai.training-ground :as training-ground]))
 
 (defn entity-handler
@@ -11,6 +12,7 @@
   [game entity]
   (condp = (:type entity)
     :enemy (enemy/create)
+    :projectile (projectile/create)
     :training-ground (training-ground/create)))
 
 (defn process-entity

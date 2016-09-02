@@ -11,6 +11,12 @@
   (let [entity-renderer (entities/entity-renderer entity)]
     (entities/create-entity entity-renderer game entity)))
 
+(defn remove-entity
+  "Removes a specific entity on the renderer"
+  [game entity]
+  (let [entity-renderer (entities/entity-renderer entity)]
+    (entities/remove-entity entity-renderer game entity)))
+
 (defn register-entities
   "Registers the game entities for the renderer to display"
   [game stage]
@@ -31,9 +37,13 @@
   "Handles events on the bus that relates to the renderer"
   [game]
   (reduce (fn [game event]
-            (if (= :add-entity (:type event))
-              (register-entity game (:entity event))
-              game))
+            (cond
+              (= :add-entity (:type event))
+                (register-entity game (:entity event))
+              (= :remove-entity (:type event))
+                (remove-entity game (:entity event))
+              :else
+                game))
           game
           (:events game)))
 

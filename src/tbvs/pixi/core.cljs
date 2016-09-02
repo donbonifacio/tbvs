@@ -67,3 +67,8 @@
   "Renders a stage via a renderer"
   [renderer stage]
   (.render renderer stage))
+
+(defn destroy
+  "Removes a sprite"
+  [stage sprite]
+  (.removeChild stage sprite))
