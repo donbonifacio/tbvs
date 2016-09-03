@@ -17,6 +17,12 @@
       (cond
         (> (:y entity) (+ (get-in game [:props :height]) 100))
           (game/remove-entity game entity)
+        (< (:y entity) -100)
+          (game/remove-entity game entity)
+        (> (:x entity) (+ (get-in game [:props :width]) 100))
+          (game/remove-entity game entity)
+        (< (:x entity) -100)
+          (game/remove-entity game entity)
         :else
           (assoc-in game [:entities (:id entity)] new-entity)))))
 
