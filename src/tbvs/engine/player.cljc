@@ -7,10 +7,21 @@
             [tbvs.engine.templates :as templates]
             [tbvs.engine.ai.training-ground :as training-ground]))
 
+(defn direction->vector
+  "Gets the direction as a vector"
+  [event]
+  (condp = (:go event)
+    :stop [0 0]
+    :up [0 -1]
+    :down [0 1]
+    :left [-1 0]
+    :right [1 0]))
+
 (defn fire
   "Fires a projectile"
   [game event]
-  (let [player (engine/entity-by-id game :player)]
+  (let [entity-id (:entity event)
+        player (engine/entity-by-id game entity-id)]
     (-> game
         (game/register-entity (templates/projectile {:x (- (:x player) 47)
                                                      :y (:y player)
@@ -20,16 +31,8 @@
                                                      :y (:y player)
                                                      :rotation 3
                                                      :dir -1}))
+        (update-in [:entities entity-id] assoc :dir (direction->vector {:go :stop}))
         (update-in [:events] conj {:type :advance-turn}))))
-
-(defn direction->vector
-  "Gets the direction as a vector"
-  [event]
-  (condp = (:go event)
-    :up [0 -1]
-    :down [0 1]
-    :left [-1 0]
-    :right [1 0]))
 
 (defn set-player-direction
   "Sets the moving vector for a player"
