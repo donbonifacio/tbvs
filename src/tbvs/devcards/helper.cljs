@@ -30,20 +30,43 @@
      (process [this game]
        (reset! ratom game))))
 
+(defn- on-key [game-atom ev]
+  (condp = (-> ev .-keyCode)
+    75 (go-event @game-atom :up)
+    38 (go-event @game-atom :up)
+
+    72 (go-event @game-atom :left)
+    37 (go-event @game-atom :left)
+
+    74 (go-event @game-atom :down)
+    40 (go-event @game-atom :down)
+
+    76 (go-event @game-atom :right)
+    39 (go-event @game-atom :right)
+
+    49 (fire-event @game-atom :fire-1)
+
+    (prn "Ingnored key event" (-> ev .-keyCode))))
+
 (defn canvas [game-atom ratom options]
   [:div {:id (:game-id @game-atom)}
     [:canvas {:width (str (-> @game-atom :props :width) "px")
               :height (str (-> @game-atom :props :height) "px")
               :style {}}]
     (when (:controls options)
-      [:div
-       [:input {:type "button" :value "fire-1" :on-click #(fire-event @game-atom :fire-1)}]
-       [:br]
-       [:input {:type "button" :value "up" :on-click #(go-event @game-atom :up)}]
-       [:div
-         [:input {:type "button" :value "left" :on-click #(go-event @game-atom :left)}]
-         [:input {:type "button" :value "right" :on-click #(go-event @game-atom :right)}]]
-       [:input {:type "button" :value "down" :on-click #(go-event @game-atom :down)}]])
+      (let [fire-1 #(fire-event @game-atom :fire-1)
+            up #(go-event @game-atom :up)
+            down #(go-event @game-atom :down)
+            left #(go-event @game-atom :left)
+            right #(go-event @game-atom :right)]
+        [:div
+         [:input {:type "button" :value "fire-1" :on-click fire-1}]
+         [:br]
+         [:input {:type "button" :value "up" :on-click up}]
+         [:div
+           [:input {:type "button" :value "left" :on-click left}]
+           [:input {:type "button" :value "right" :on-click right}]]
+         [:input {:type "button" :value "down" :on-click down}]]))
     (when (:stats options)
       (let [game @ratom]
         [:ul
@@ -60,7 +83,8 @@
          game (-> game
                   (assoc :game-id game-id)
                   (update :system conj (game-recorder ratom)))
-         game-atom (atom nil)]
+         game-atom (atom nil)
+         on-key (partial on-key game-atom)]
      (with-meta
          #(canvas game-atom ratom options)
          {:component-did-mount
@@ -72,10 +96,14 @@
                             (game-creator/create)
                             (assoc :game-id game-id)
                             (game/start))]
+               (when (:controls options)
+                 (.addEventListener js/document "keyup" on-key))
                (reset! game-atom game)))
  
           :component-will-unmount
             (fn [this]
+              (when (:controls options)
+                (.removeEventListener js/document "keyup" on-key))
               (game/stop @game-atom))}))))
 
 (defn enemy-rain-spawner
